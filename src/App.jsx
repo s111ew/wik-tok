@@ -7,16 +7,12 @@ function App() {
   const [articles, setArticles] = useState([]);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    const fetchArticles = async () => {
-      const requests = Array.from({length: 5}, fetchArticle);
-      const returnedArticles = await Promise.all(requests);
-      setArticles(returnedArticles);
-      setHasLoaded(true)
-    };
     fetchArticles();
-  }, []);
+    setHasLoaded(true);
+  }, [page]);
 
   const fetchArticle = () => {
     return fetch("https://en.wikipedia.org/api/rest_v1/page/random/summary")
@@ -31,17 +27,49 @@ function App() {
       })
   }
 
+  const fetchArticles = async () => {
+    const requests = Array.from({length: 5}, fetchArticle);
+    const returnedArticles = await Promise.all(requests);
+    setArticles((prev) => [...prev ,...returnedArticles]);
+  };
+
+  const attachObserver = () => {
+    const observerElement = document.querySelector(".observer");
+    if (!observerElement) return;
+
+    const incrementPage = (entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setPage(prevPage => (prevPage + 1))
+          console.log("More articles loading...")
+          observer.unobserve(observerElement)
+        }
+      })
+    }
+  
+    const observer = new IntersectionObserver(incrementPage, {
+      root: null,
+      threshold: 1.0,
+    });
+  
+    observer.observe(observerElement);
+  }
+
   return (
     <>
       <Header isLoggedIn={isLoggedIn} />
-      {hasLoaded && articles.length > 0 ? <Cards isLoggedIn={isLoggedIn} articles={articles}/> : <p>Loading...</p>}
+      {hasLoaded && articles.length > 0 ? <Cards attachObserver={attachObserver} articles={articles}/> : <p>Loading...</p>}
     </>
   )
 }
 
-function Cards({ articles }) {
-  const articlesToRender = articles.map(article =>
-    <div key={article.title} className="card" style={{backgroundImage: `url(${article.imageUrl})`}}>
+function Cards({ articles, attachObserver }) {
+  useEffect(() => {
+    attachObserver();
+  }, [articles])
+
+  const articlesToRender = articles.map((article, index) =>
+    <div key={article.title} className="card" style={ article.imageUrl ? { backgroundImage: `url(${article.imageUrl})`}  : { backgroundColor: 'black' }}>
       <div className='card-text'>
         <h2 className="card-title">{article.title}</h2>
         <p className="card-description">{article.description}</p>
@@ -52,6 +80,7 @@ function Cards({ articles }) {
           <AIbutton title={article.title}/>
         </div>
       </div>
+      {index === articles.length - 2 && <div className='observer'></div>}
     </div>
   )
   return(
@@ -73,8 +102,8 @@ function AIbutton({ title }) {
 function Header({ isLoggedIn }) {
   return(
     <div className='header'>
-      <h1>WikTok</h1>
-      {isLoggedIn ? '' : <div>Log In</div>}
+      <h1 className='logo'>WikTok</h1>
+      {isLoggedIn ? '' : <div className='log-in-button'>Log In</div>}
     </div>
   )
 }
