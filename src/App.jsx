@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import arrowSvg from './assets/arrow.svg'
-import sparkleSvg from './assets/sparkle.svg'
+import arrowSvg from './assets/images/arrow.svg'
+import sparkleSvg from './assets/images/sparkle.svg'
+import wikiLogoGif from './assets/images/wiki_logo_spin.gif'
+import bookmarkOutlineSvg from './assets/images/bookmark.svg'
+import bookmarkFilledSvg from './assets/images/bookmark-filled.svg'
 
 function App() {
   const [articles, setArticles] = useState([]);
@@ -11,7 +14,6 @@ function App() {
 
   useEffect(() => {
     fetchArticles();
-    setHasLoaded(true);
   }, [page]);
 
   const fetchArticle = () => {
@@ -19,7 +21,7 @@ function App() {
       .then((response) => response.json())
       .then((data) => {
         return {
-          imageUrl: data.originalimage.source || "",
+          imageUrl: data.originalimage?.source || "",
           title: data.title,
           description: data.extract.split(' ').length > 25 ? `${data.extract.split(' ').slice(0, 25).join(' ')}...` : data.extract,
           link: data.content_urls.desktop.page,
@@ -31,6 +33,7 @@ function App() {
     const requests = Array.from({length: 5}, fetchArticle);
     const returnedArticles = await Promise.all(requests);
     setArticles((prev) => [...prev ,...returnedArticles]);
+    setHasLoaded(true);
   };
 
   const attachObserver = () => {
@@ -57,19 +60,20 @@ function App() {
 
   return (
     <>
-      <Header isLoggedIn={isLoggedIn} />
-      {hasLoaded && articles.length > 0 ? <Cards attachObserver={attachObserver} articles={articles}/> : <p>Loading...</p>}
+      {hasLoaded ? <Header isLoggedIn={isLoggedIn} /> : ''}
+      {hasLoaded && articles.length > 0 ? <Cards attachObserver={attachObserver} articles={articles} isLoggedIn={isLoggedIn}/> : <LoadingPage />}
     </>
   )
 }
 
-function Cards({ articles, attachObserver }) {
+function Cards({ articles, attachObserver, isLoggedIn }) {
   useEffect(() => {
     attachObserver();
   }, [articles])
 
   const articlesToRender = articles.map((article, index) =>
     <div key={article.title} className="card" style={ article.imageUrl ? { backgroundImage: `url(${article.imageUrl})`}  : { backgroundColor: 'black' }}>
+      <SaveButton isLoggedIn={isLoggedIn} />
       <div className='card-text'>
         <h2 className="card-title">{article.title}</h2>
         <p className="card-description">{article.description}</p>
@@ -104,6 +108,34 @@ function Header({ isLoggedIn }) {
     <div className='header'>
       <h1 className='logo'>WikTok</h1>
       {isLoggedIn ? '' : <div className='log-in-button'>Log In</div>}
+    </div>
+  )
+}
+
+function LoadingPage() {
+  return (
+    <section className='loading-page'>
+      <h2 className='logo'>WikTok</h2>
+      <img src={wikiLogoGif} alt="Wikipedia Logo" />
+      <p className='loading-text'>Loading Articles...</p>
+    </section>
+  )
+}
+
+function SaveButton({ isLoggedIn }) {
+  const [isSaved, setIsSaved] = useState(false)
+
+  const handleSave = () => {
+    if (!isSaved) {
+      setIsSaved(true)
+    } else if (isSaved) {
+      setIsSaved(false)
+    }
+  }
+
+  return(
+    <div className='save-button-container'>
+      <img className='save-button' onClick={handleSave} src={isSaved ? bookmarkFilledSvg : bookmarkOutlineSvg} />
     </div>
   )
 }
