@@ -11,6 +11,7 @@ function App() {
   const [hasLoaded, setHasLoaded] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [page, setPage] = useState(1);
+  const [isVisibleLoginPage, setIsVisibleLoginPage] = useState(false)
 
   useEffect(() => {
     fetchArticles();
@@ -18,7 +19,12 @@ function App() {
 
   const fetchArticle = () => {
     return fetch("https://en.wikipedia.org/api/rest_v1/page/random/summary")
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status >= 400) {
+          throw new Error("server error");
+        }
+        return response.json();
+      })
       .then((data) => {
         return {
           imageUrl: data.originalimage?.source || "",
@@ -27,6 +33,7 @@ function App() {
           link: data.content_urls.desktop.page,
         };
       })
+      .catch((err) => console.error("Error fetching article:", err))
   }
 
   const fetchArticles = async () => {
@@ -60,8 +67,9 @@ function App() {
 
   return (
     <>
-      {hasLoaded ? <Header isLoggedIn={isLoggedIn} /> : ''}
+      {hasLoaded ? <Header setIsVisibleLoginPage={setIsVisibleLoginPage} isLoggedIn={isLoggedIn} /> : ''}
       {hasLoaded && articles.length > 0 ? <Cards attachObserver={attachObserver} articles={articles} isLoggedIn={isLoggedIn}/> : <LoadingPage />}
+      {isVisibleLoginPage ? <LoginPage setIsVisibleLoginPage={setIsVisibleLoginPage} /> : ''}
     </>
   )
 }
@@ -103,11 +111,14 @@ function AIbutton({ title }) {
   )
 }
 
-function Header({ isLoggedIn }) {
+function Header({ isLoggedIn, setIsVisibleLoginPage }) {
+  const handleClick = () => {
+    setIsVisibleLoginPage(true)
+  }
   return(
     <div className='header'>
       <h1 className='logo'>WikTok</h1>
-      {isLoggedIn ? '' : <div className='log-in-button'>Log In</div>}
+      {isLoggedIn ? '' : <div onClick={handleClick} className='log-in-button'>Log In</div>}
     </div>
   )
 }
@@ -136,6 +147,36 @@ function SaveButton({ isLoggedIn }) {
   return(
     <div className='save-button-container'>
       <img className='save-button' onClick={handleSave} src={isSaved ? bookmarkFilledSvg : bookmarkOutlineSvg} />
+    </div>
+  )
+}
+
+function LoginPage({ setIsVisibleLoginPage }) {
+  const [isSignUp, setIsSignUp] = useState(false)
+  const handleClick = () => {
+    setIsVisibleLoginPage(false)
+  }
+
+  return(
+    <div onClick={handleClick} className='login-background'>
+      <section className='login-container'>
+        {isSignUp ? <h2>Signup</h2> : <h2>Login</h2>}
+        <form>
+          <div className='username input-container'>
+            <label htmlFor="username">Username*</label>
+            <input id="username" type="text" />
+          </div>
+          <div className='password input-container'>
+            <label htmlFor="password">Password*</label>
+            <input id="password" type="password" />
+          </div>
+          {isSignUp ? <div className='confirm-password input-container'>
+            <label htmlFor="confirm-password">Confirm Password*</label>
+            <input id="confirm-password" type="password" />
+          </div> : ''}
+          {isSignUp ? <button>Signup</button> : <button>Login</button>}
+        </form>
+      </section>
     </div>
   )
 }

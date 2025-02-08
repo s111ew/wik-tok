@@ -55,6 +55,7 @@ body {
 
 #root {
   height: 100vh;
+  position: relative;
 }
 
 .header {
@@ -190,4 +191,45 @@ body {
   margin-right: 15px;
   align-self: flex-end;
   padding: 15px 15px 10px 15px;
+}
+
+.login-background {
+  z-index: 10000;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  height: 100%;
+  width: 100%;
+  top: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-container {
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* border: 1px solid white; */
+  box-shadow: 0px 0px 15px 0px rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.login-container {
+  align-self: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
 }
