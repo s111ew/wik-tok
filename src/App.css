@@ -39,12 +39,12 @@ h6 {
 
 @font-face {
   font-family: "SF pro";
-  src: url("./assets/fonts/SF-Pro-Display-Regular.otf");
+  src: url("../public/fonts/SF-Pro-Display-Regular.otf");
 }
 
 @font-face {
   font-family: "Linux Libertine";
-  src: url("./assets/fonts/Linux-Libertine.ttf");
+  src: url("../public/fonts/Linux-Libertine.ttf");
 }
 
 body {
@@ -54,7 +54,7 @@ body {
 }
 
 #root {
-  height: 100vh;
+  height: 100dvh;
   position: relative;
 }
 
