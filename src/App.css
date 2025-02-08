@@ -39,12 +39,12 @@ h6 {
 
 @font-face {
   font-family: "SF pro";
-  src: url("../public/fonts/SF-Pro-Display-Regular.otf");
+  src: url("../fonts/SF-Pro-Display-Regular.otf");
 }
 
 @font-face {
   font-family: "Linux Libertine";
-  src: url("../public/fonts/Linux-Libertine.ttf");
+  src: url("../fonts/Linux-Libertine.ttf");
 }
 
 body {
