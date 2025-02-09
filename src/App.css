@@ -31,8 +31,7 @@ h5,
 h6 {
   overflow-wrap: break-word;
 }
-
-#root,
+d #root,
 #__next {
   isolation: isolate;
 }
@@ -178,12 +177,6 @@ body {
 
 .loading-page > .logo {
   font-size: 35px;
-  color: black;
-}
-
-.loading-text {
-  margin-top: 10px;
-  font-family: "SF Pro";
   color: black;
 }
 
