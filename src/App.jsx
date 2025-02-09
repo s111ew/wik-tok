@@ -128,7 +128,6 @@ function LoadingPage() {
     <section className='loading-page'>
       <h2 className='logo'>WikTok</h2>
       <img src={wikiLogoGif} alt="Wikipedia Logo" />
-      <p className='loading-text'>Loading Articles...</p>
     </section>
   )
 }
