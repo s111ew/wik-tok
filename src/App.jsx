@@ -39,6 +39,7 @@ function App() {
   const fetchArticles = async () => {
     const requests = Array.from({length: 5}, fetchArticle);
     const returnedArticles = await Promise.all(requests);
+    console.log(returnedArticles)
     setArticles((prev) => [...prev ,...returnedArticles]);
     setHasLoaded(true);
   };
