@@ -1,4 +1,5 @@
 import api from "../api";
+import bookmarkFilledSvg from '../assets/images/bookmark-filled.svg'
 import { useEffect, useState } from "react";
 
 function Profile({ username, token }) {
@@ -31,17 +32,19 @@ function Profile({ username, token }) {
 function SavedArticles({ token, savedArticles, setSavedArticles }) {
   const articlesToRender = savedArticles.map((article, index) =>
      <div key={article.title} className="card saved" style={ article.imageUrl ? { backgroundImage: `url(${article.imageUrl})`}  : { backgroundColor: 'black' }}>
-        <p className="remove-button" onClick={() => {
-          const deleteSavedArticle = async () => {
-            try {
-              await api.deleteUserSavedArticle(token, index);
-              setSavedArticles(prev => prev.filter((_, i) => i !== index))
-            } catch(err) {
-              console.error("Failed to delete article:", err)
+        <div className="save-button-container">
+          <img src={bookmarkFilledSvg} className="save-button" onClick={() => {
+            const deleteSavedArticle = async () => {
+              try {
+                await api.deleteUserSavedArticle(token, index);
+                setSavedArticles(prev => prev.filter((_, i) => i !== index))
+              } catch(err) {
+                console.error("Failed to delete article:", err)
+              }
             }
-          }
-          deleteSavedArticle()
-        }}>X</p>
+            deleteSavedArticle()
+          }}></img>
+        </div>
         <div className='card-text saved'>
             <h2 className="card-title saved">{article.title}</h2>
             <p className="card-description saved">{article.extract}</p>

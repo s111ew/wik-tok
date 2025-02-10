@@ -67,40 +67,40 @@ function LoginPage({ setIsVisibleLoginPage, setToken, setUsername }) {
     <div className='login-background'>
       <section className='login-container'>
         <div className="login-header">
-          {isSignUp ? <h2>Sign Up</h2> : <h2>Login</h2>}
-          <span onClick={handleClose} className="close-button">X</span>
+          {isSignUp ? <h2>Sign up for <span className="logo mini">WikTok</span></h2> : <h2>Log in to <span className="mini logo">WikTok</span></h2>}
+          <span onClick={handleClose} className="close-button">Close</span>
         </div>
         {error ? <span>{error}</span> : ''}
         <form onSubmit={isSignUp ? handleSignUp : handleLogin}>
           <div className='username input-container'>
-            <label htmlFor="username">Username*</label>
             <input onChange={(e) => {
               setUserObject((prev) => ({
                 ...prev,
                 username: e.target.value
               }))
-            }} required id="username" type="text" placeholder="e.g. Jane_Smith2"/>
+            }} required id="username" type="text" placeholder=" " />
+            <label className="floating" htmlFor="username">Username *</label>
           </div>
           <div className='password input-container'>
-            <label htmlFor="password">Password*</label>
             <input onChange={(e) => {
               setUserObject((prev) => ({
                 ...prev,
                 password: e.target.value
               }))
-            }} required id="password" type="password" placeholder="e.g. Password_123" />
+            }} required id="password" type="password" placeholder=" " />
+            <label className="floating" htmlFor="password">Password *</label>
           </div>
           {isSignUp ? <div className='confirm-password input-container'>
-            <label htmlFor="confirm-password">Confirm Password*</label>
             <input onChange={(e) => {
               setUserObject((prev) => ({
                 ...prev,
                 passwordConf: e.target.value
               }))
-            }} required id="confirm-password" type="password" placeholder="e.g. Password_123"/>
+            }} required id="confirm-password" type="password" placeholder=" " />
+            <label className="floating" htmlFor="confirm-password">Confirm Password *</label>
           </div> : ''}
           <button type="submit">{isSignUp ? "Signup" : "Login"}</button>
-          {isSignUp ? <p>Already have an account? <span onClick={toggleIsSignup} className="login-link">Login</span></p> : <p>Don't have an account? <span onClick={toggleIsSignup} className="login-link">Create an account</span></p>}
+          {isSignUp ? <p>Already have an account? <span onClick={toggleIsSignup} className="login-link">Login</span></p> : <p>Don't have an account? <span onClick={toggleIsSignup} className="login-link">Sign up</span></p>}
         </form>
       </section>
     </div>
