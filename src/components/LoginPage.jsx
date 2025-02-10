@@ -3,6 +3,7 @@ import api from "../api"
 
 function LoginPage({ setIsVisibleLoginPage, setToken, setUsername }) {
   const [isSignUp, setIsSignUp] = useState(true)
+  const [error, setError] = useState(null)
   const [userObject, setUserObject] = useState({
     username: '',
     password: '',
@@ -13,18 +14,31 @@ function LoginPage({ setIsVisibleLoginPage, setToken, setUsername }) {
   }
 
   const toggleIsSignup = () => {
-    isSignUp ? setIsSignUp(false) : setIsSignUp(true)
+    isSignUp ? setIsSignUp(false) : setIsSignUp(true);
+    setError(null)
   }
 
   const handleSignUp = (event) => {
     event.preventDefault();
+    if (!userObject.password || !userObject.passwordConf || (userObject.password !== userObject.passwordConf)) {
+      setError("Password and Confirmation must match.");
+      return
+    }
     if (userObject.username && userObject.password && userObject.passwordConf && (userObject.password === userObject.passwordConf)) {
       api.registerUser(userObject.username, userObject.password)
         .then((data) => {
           console.log("User registered:", data);
           toggleIsSignup()
+          setError("Account Created! Please login.")
         })
-        .catch((err) => console.error("Registration failed:", err));
+        .catch((err) => {
+          console.error("Registration failed:", err);
+          if (err.response.data.msg = "User already exists") {
+            setError("Username taken, please try another.")
+          } else {
+            setError("Error registering, please try again.")
+          }
+        });
     }
   }
   
@@ -37,7 +51,14 @@ function LoginPage({ setIsVisibleLoginPage, setToken, setUsername }) {
       setToken(data.token);
       setUsername(data.user.username);
     })
-    .catch((err) => console.error("Login failed:", err));
+    .catch((err) => {
+      console.error("Login failed:", err);
+      if (err.response.data.msg = "Invalid credentials") {
+        setError("Username or Password incorrect, please try again.")
+      } else {
+        setError("Error logging in, please try again.")
+      }
+    });
   }
 
   return(
@@ -47,6 +68,7 @@ function LoginPage({ setIsVisibleLoginPage, setToken, setUsername }) {
           {isSignUp ? <h2>Sign Up</h2> : <h2>Login</h2>}
           <span onClick={handleClose} className="close-button">X</span>
         </div>
+        {error ? <span>{error}</span> : ''}
         <form onSubmit={isSignUp ? handleSignUp : handleLogin}>
           <div className='username input-container'>
             <label htmlFor="username">Username*</label>
