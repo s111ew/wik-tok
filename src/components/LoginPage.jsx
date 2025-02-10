@@ -1,7 +1,7 @@
 import { useState } from "react"
 import api from "../api"
 
-function LoginPage({ setIsVisibleLoginPage, setToken }) {
+function LoginPage({ setIsVisibleLoginPage, setToken, setUsername }) {
   const [isSignUp, setIsSignUp] = useState(true)
   const [userObject, setUserObject] = useState({
     username: '',
@@ -35,6 +35,7 @@ function LoginPage({ setIsVisibleLoginPage, setToken }) {
       console.log("User logged in:", data);
       setIsVisibleLoginPage(false);
       setToken(data.token);
+      setUsername(data.user.username);
     })
     .catch((err) => console.error("Login failed:", err));
   }

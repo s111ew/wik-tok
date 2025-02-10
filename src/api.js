@@ -53,7 +53,7 @@ const api = {
       const res = await axios.get(`${API_URL}/articles/saved`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      return res.data;
+      return res.data.savedArticles;
     } catch (err) {
       console.error("Error fetching saved articles:", err);
       throw err;

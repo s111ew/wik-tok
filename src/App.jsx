@@ -4,6 +4,7 @@ import LoadingPage from './components/LoadingPage'
 import Header from './components/Header'
 import Cards from './components/Cards'
 import LoginPage from './components/LoginPage'
+import Profile from './components/Profile'
 import axios from 'axios'
 
 function App() {
@@ -11,7 +12,9 @@ function App() {
   const [hasLoaded, setHasLoaded] = useState(false);
   const [token, setToken] = useState(null)
   const [page, setPage] = useState(1);
-  const [isVisibleLoginPage, setIsVisibleLoginPage] = useState(false)
+  const [isVisibleLoginPage, setIsVisibleLoginPage] = useState(false);
+  const [username, setUsername] = useState(null);
+  const [profilePageIsVisible, setProfilePageIsVisible] = useState(false)
 
   useEffect(() => {
     fetchArticles();
@@ -61,9 +64,10 @@ function App() {
 
   return (
     <>
-      {hasLoaded ? <Header setIsVisibleLoginPage={setIsVisibleLoginPage} token={token} /> : ''}
+      {hasLoaded ? <Header profilePageIsVisible={profilePageIsVisible} setProfilePageIsVisible={setProfilePageIsVisible} setIsVisibleLoginPage={setIsVisibleLoginPage} token={token} /> : ''}
+      {profilePageIsVisible ? <Profile username={username} token={token} /> : ''}
       {hasLoaded && articles.length > 0 ? <Cards setIsVisibleLoginPage={setIsVisibleLoginPage} attachObserver={attachObserver} articles={articles} token={token}/> : <LoadingPage />}
-      {isVisibleLoginPage ? <LoginPage setToken={setToken} setIsVisibleLoginPage={setIsVisibleLoginPage} /> : ''}
+      {isVisibleLoginPage ? <LoginPage setUsername={setUsername} setToken={setToken} setIsVisibleLoginPage={setIsVisibleLoginPage} /> : ''}
     </>
   )
 }
