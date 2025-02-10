@@ -3,15 +3,16 @@ import sparkleSvg from '../assets/images/sparkle.svg'
 import bookmarkOutlineSvg from '../assets/images/bookmark.svg'
 import bookmarkFilledSvg from '../assets/images/bookmark-filled.svg'
 import { useEffect, useState } from 'react'
+import api from '../api'
 
-function Cards({ articles, attachObserver, isLoggedIn, setIsVisibleLoginPage }) {
+function Cards({ articles, attachObserver, isLoggedIn, setIsVisibleLoginPage, token }) {
   useEffect(() => {
     attachObserver();
   }, [articles])
 
   const articlesToRender = articles.map((article, index) =>
     <div key={article.title} className="card" style={ article.imageUrl ? { backgroundImage: `url(${article.imageUrl})`}  : { backgroundColor: 'black' }}>
-      <SaveButton setIsVisibleLoginPage={setIsVisibleLoginPage} isLoggedIn={isLoggedIn} />
+      <SaveButton setIsVisibleLoginPage={setIsVisibleLoginPage} isLoggedIn={isLoggedIn} token={token} article={article} />
       <div className='card-text'>
         <h2 className="card-title">{article.title}</h2>
         <p className="card-description">{article.description}</p>
@@ -41,7 +42,7 @@ function AIbutton({ title }) {
   )
 }
 
-function SaveButton({ isLoggedIn, setIsVisibleLoginPage }) {
+function SaveButton({ isLoggedIn, setIsVisibleLoginPage, token, article }) {
   const [isSaved, setIsSaved] = useState(false)
 
   const handleSave = () => {
@@ -49,6 +50,13 @@ function SaveButton({ isLoggedIn, setIsVisibleLoginPage }) {
       setIsVisibleLoginPage(true)
     } else {
       if (!isSaved) {
+        api.saveArticle(
+          token,
+          article.title,
+          article.description,
+          article.imageUrl,
+          article.link
+        )
         setIsSaved(true)
       } else if (isSaved) {
         setIsSaved(false)

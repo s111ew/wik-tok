@@ -1,6 +1,7 @@
 import { useState } from "react"
+import api from "../api"
 
-function LoginPage({ setIsVisibleLoginPage }) {
+function LoginPage({ setIsVisibleLoginPage, setIsLoggedIn }) {
   const [isSignUp, setIsSignUp] = useState(true)
   const [userObject, setUserObject] = useState({
     username: '',
@@ -10,8 +11,29 @@ function LoginPage({ setIsVisibleLoginPage }) {
     setIsVisibleLoginPage(false)
   }
 
-  const toggleIsLogin = () => {
+  const toggleIsSignup = () => {
     isSignUp ? setIsSignUp(false) : setIsSignUp(true)
+  }
+
+  const handleSignUp = (event) => {
+    event.preventDefault();
+    api.registerUser(userObject.username, userObject.password)
+      .then((data) => {
+        console.log("User registered:", data);
+        toggleIsSignup()
+      })
+      .catch((err) => console.error("Registration failed:", err));
+  }
+  
+  const handleLogin = (event) => {
+    event.preventDefault();
+    api.loginUser(userObject.username, userObject.password)
+      .then((data) => {
+        console.log("User logged in:", data);
+        setIsVisibleLoginPage(false);
+        setIsLoggedIn(true);
+      })
+      .catch((err) => console.error("Login failed:", err));
   }
 
   return(
@@ -21,7 +43,7 @@ function LoginPage({ setIsVisibleLoginPage }) {
           {isSignUp ? <h2>Sign Up</h2> : <h2>Login</h2>}
           <span onClick={handleClose} className="close-button">X</span>
         </div>
-        <form>
+        <form onSubmit={isSignUp ? handleSignUp : handleLogin}>
           <div className='username input-container'>
             <label htmlFor="username">Username*</label>
             <input onChange={(e) => {
@@ -46,8 +68,8 @@ function LoginPage({ setIsVisibleLoginPage }) {
             <label htmlFor="confirm-password">Confirm Password*</label>
             <input required id="confirm-password" type="password" placeholder="e.g. Password_123"/>
           </div> : ''}
-          {isSignUp ? <button>Signup</button> : <button>Login</button>}
-          {isSignUp ? <p>Don't have an account? <span onClick={toggleIsLogin} className="login-link">Create an account</span></p> : <p>Already have an account? <span onClick={toggleIsLogin} className="login-link">Login</span></p>}
+          <button type="submit">{isSignUp ? "Signup" : "Login"}</button>
+          {isSignUp ? <p>Already have an account? <span onClick={toggleIsSignup} className="login-link">Login</span></p> : <p>Don't have an account? <span onClick={toggleIsSignup} className="login-link">Create an account</span></p>}
         </form>
       </section>
     </div>

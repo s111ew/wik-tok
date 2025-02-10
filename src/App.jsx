@@ -38,7 +38,6 @@ function App() {
   const fetchArticles = async () => {
     const requests = Array.from({length: 5}, fetchArticle);
     const returnedArticles = await Promise.all(requests);
-    console.log(returnedArticles)
     setArticles((prev) => [...prev ,...returnedArticles]);
     setHasLoaded(true);
   };
@@ -51,7 +50,6 @@ function App() {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           setPage(prevPage => (prevPage + 1))
-          console.log("More articles loading...")
           observer.unobserve(observerElement)
         }
       })
@@ -69,7 +67,7 @@ function App() {
     <>
       {hasLoaded ? <Header setIsVisibleLoginPage={setIsVisibleLoginPage} isLoggedIn={isLoggedIn} /> : ''}
       {hasLoaded && articles.length > 0 ? <Cards setIsVisibleLoginPage={setIsVisibleLoginPage} attachObserver={attachObserver} articles={articles} isLoggedIn={isLoggedIn}/> : <LoadingPage />}
-      {isVisibleLoginPage ? <LoginPage setIsVisibleLoginPage={setIsVisibleLoginPage} /> : ''}
+      {isVisibleLoginPage ? <LoginPage setIsLoggedIn={setIsLoggedIn} setIsVisibleLoginPage={setIsVisibleLoginPage} /> : ''}
     </>
   )
 }
