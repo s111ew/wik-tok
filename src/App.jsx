@@ -27,8 +27,8 @@ function App() {
         return {
           imageUrl: data.originalimage?.source || "",
           title: data.title,
-          description: data.extract.split(' ').length > 25 ? `${data.extract.split(' ').slice(0, 25).join(' ')}...` : data.extract,
-          link: data.content_urls.desktop.page,
+          extract: data.extract.split(' ').length > 25 ? `${data.extract.split(' ').slice(0, 25).join(' ')}...` : data.extract,
+          articleUrl: data.content_urls.desktop.page,
         };
       })
       .catch((err) => console.error("Error fetching article:", err))

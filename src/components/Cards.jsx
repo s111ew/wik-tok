@@ -14,9 +14,9 @@ function Cards({ articles, attachObserver, setIsVisibleLoginPage, token }) {
       <SaveButton setIsVisibleLoginPage={setIsVisibleLoginPage} token={token} article={article} />
       <div className='card-text'>
         <h2 className="card-title">{article.title}</h2>
-        <p className="card-description">{article.description}</p>
+        <p className="card-description">{article.extract}</p>
         <div className='card-buttons'>
-          <a className="card-link" href={article.link} target="_blank" rel="noopener noreferrer">
+          <a className="card-link" href={article.articleUrl} target="_blank" rel="noopener noreferrer">
             Read Full Article<img className='arrow-svg' src={arrowSvg}></img>
           </a>
         </div>
@@ -42,9 +42,9 @@ function SaveButton({ token, setIsVisibleLoginPage, article }) {
         api.saveArticle(
           token,
           article.title,
-          article.description,
+          article.extract,
           article.imageUrl,
-          article.link
+          article.articleUrl
         )
         .catch((err) => console.error("Failed to save article:", err))
         setIsSaved(true)
