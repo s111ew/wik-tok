@@ -207,7 +207,6 @@ body {
   flex-direction: column;
   gap: 10px;
   border: 1px solid white;
-  /* box-shadow: 0px 0px 15px 0px rgba(255, 255, 255, 0.4); */
   border-radius: 20px;
   padding: 20px;
 }
@@ -233,7 +232,8 @@ form {
   align-items: center;
 }
 
-.close-button {
+.close-button,
+.remove-button {
   width: 15px;
   height: 15px;
   border: 1px solid white;
@@ -242,6 +242,7 @@ form {
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 0px 0px 15px 0px rgba(255, 255, 255, 0.3);
 }
 
 .login-link {
@@ -275,11 +276,12 @@ form {
   gap: 20px;
 }
 
-.saved-articles > .card {
+.saved.card {
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.3);
   border-radius: 15px;
-  height: 70%;
-  padding-top: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 200px;
 }
 
 .empty-saved-articles {
@@ -288,4 +290,11 @@ form {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.remove-button {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  margin: 15px;
+  align-self: flex-end;
 }
