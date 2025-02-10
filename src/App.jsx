@@ -68,7 +68,7 @@ function App() {
   return (
     <>
       {hasLoaded ? <Header setIsVisibleLoginPage={setIsVisibleLoginPage} isLoggedIn={isLoggedIn} /> : ''}
-      {hasLoaded && articles.length > 0 ? <Cards attachObserver={attachObserver} articles={articles} isLoggedIn={isLoggedIn}/> : <LoadingPage />}
+      {hasLoaded && articles.length > 0 ? <Cards setIsVisibleLoginPage={setIsVisibleLoginPage} attachObserver={attachObserver} articles={articles} isLoggedIn={isLoggedIn}/> : <LoadingPage />}
       {isVisibleLoginPage ? <LoginPage setIsVisibleLoginPage={setIsVisibleLoginPage} /> : ''}
     </>
   )

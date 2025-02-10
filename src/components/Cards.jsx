@@ -4,14 +4,14 @@ import bookmarkOutlineSvg from '../assets/images/bookmark.svg'
 import bookmarkFilledSvg from '../assets/images/bookmark-filled.svg'
 import { useEffect, useState } from 'react'
 
-function Cards({ articles, attachObserver, isLoggedIn }) {
+function Cards({ articles, attachObserver, isLoggedIn, setIsVisibleLoginPage }) {
   useEffect(() => {
     attachObserver();
   }, [articles])
 
   const articlesToRender = articles.map((article, index) =>
     <div key={article.title} className="card" style={ article.imageUrl ? { backgroundImage: `url(${article.imageUrl})`}  : { backgroundColor: 'black' }}>
-      <SaveButton isLoggedIn={isLoggedIn} />
+      <SaveButton setIsVisibleLoginPage={setIsVisibleLoginPage} isLoggedIn={isLoggedIn} />
       <div className='card-text'>
         <h2 className="card-title">{article.title}</h2>
         <p className="card-description">{article.description}</p>
@@ -41,14 +41,18 @@ function AIbutton({ title }) {
   )
 }
 
-function SaveButton({ isLoggedIn }) {
+function SaveButton({ isLoggedIn, setIsVisibleLoginPage }) {
   const [isSaved, setIsSaved] = useState(false)
 
   const handleSave = () => {
-    if (!isSaved) {
-      setIsSaved(true)
-    } else if (isSaved) {
-      setIsSaved(false)
+    if (!isLoggedIn) {
+      setIsVisibleLoginPage(true)
+    } else {
+      if (!isSaved) {
+        setIsSaved(true)
+      } else if (isSaved) {
+        setIsSaved(false)
+      }
     }
   }
 
