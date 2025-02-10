@@ -49,7 +49,9 @@ function LoginPage({ setIsVisibleLoginPage, setToken, setUsername }) {
       console.log("User logged in:", data);
       setIsVisibleLoginPage(false);
       setToken(data.token);
+      localStorage.setItem("token", data.token);
       setUsername(data.user.username);
+      localStorage.setItem("username", data.user.username)
     })
     .catch((err) => {
       console.error("Login failed:", err);

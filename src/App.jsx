@@ -10,10 +10,10 @@ import axios from 'axios'
 function App() {
   const [articles, setArticles] = useState([]);
   const [hasLoaded, setHasLoaded] = useState(false);
-  const [token, setToken] = useState(null)
+  const [token, setToken] = useState(localStorage.getItem("token") || null)
   const [page, setPage] = useState(1);
   const [isVisibleLoginPage, setIsVisibleLoginPage] = useState(false);
-  const [username, setUsername] = useState(null);
+  const [username, setUsername] = useState(localStorage.getItem("username") || null);
   const [profilePageIsVisible, setProfilePageIsVisible] = useState(false)
 
   useEffect(() => {

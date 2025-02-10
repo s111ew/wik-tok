@@ -1,5 +1,4 @@
 import arrowSvg from '../assets/images/arrow.svg'
-import sparkleSvg from '../assets/images/sparkle.svg'
 import bookmarkOutlineSvg from '../assets/images/bookmark.svg'
 import bookmarkFilledSvg from '../assets/images/bookmark-filled.svg'
 import { useEffect, useState } from 'react'
@@ -11,16 +10,15 @@ function Cards({ articles, attachObserver, setIsVisibleLoginPage, token }) {
   }, [articles])
 
   const articlesToRender = articles.map((article, index) =>
-    <div key={article.title} className="card" style={ article.imageUrl ? { backgroundImage: `url(${article.imageUrl})`}  : { backgroundColor: 'black' }}>
+    <div key={article.title} className="card" style={ article.imageUrl !== undefined ? { backgroundImage: `url(${article.imageUrl})`}  : { backgroundColor: 'black' }}>
       <SaveButton setIsVisibleLoginPage={setIsVisibleLoginPage} token={token} article={article} />
       <div className='card-text'>
         <h2 className="card-title">{article.title}</h2>
         <p className="card-description">{article.description}</p>
         <div className='card-buttons'>
           <a className="card-link" href={article.link} target="_blank" rel="noopener noreferrer">
-            Article<img className='arrow-svg' src={arrowSvg}></img>
+            Read Full Article<img className='arrow-svg' src={arrowSvg}></img>
           </a>
-          <AIbutton title={article.title}/>
         </div>
       </div>
       {index === articles.length - 2 && <div className='observer'></div>}
@@ -33,19 +31,10 @@ function Cards({ articles, attachObserver, setIsVisibleLoginPage, token }) {
   )
 }
 
-function AIbutton({ title }) {
-  return(
-    <div className='card-ai-button'>
-      <span>AI Further Reading</span>
-      <img className='sparkle-svg' src={sparkleSvg}/>
-    </div>
-  )
-}
-
 function SaveButton({ token, setIsVisibleLoginPage, article }) {
   const [isSaved, setIsSaved] = useState(false)
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!token) {
       setIsVisibleLoginPage(true)
     } else {
@@ -57,13 +46,15 @@ function SaveButton({ token, setIsVisibleLoginPage, article }) {
           article.imageUrl,
           article.link
         )
-        .then((data) => {
-          console.log("Article saved:", data)
-        })
         .catch((err) => console.error("Failed to save article:", err))
         setIsSaved(true)
       } else if (isSaved) {
-        setIsSaved(false)
+        api.getUserSavedArticles(token)
+          .then((savedArticles) => {
+            return api.deleteUserSavedArticle(token, savedArticles.length - 1)
+          })
+          .then(setIsSaved(false))
+          .catch((err) => console.error("Failed to delete saved article:", err))
       }
     }
   }
