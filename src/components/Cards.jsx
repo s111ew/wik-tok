@@ -5,14 +5,14 @@ import bookmarkFilledSvg from '../assets/images/bookmark-filled.svg'
 import { useEffect, useState } from 'react'
 import api from '../api'
 
-function Cards({ articles, attachObserver, isLoggedIn, setIsVisibleLoginPage, token }) {
+function Cards({ articles, attachObserver, setIsVisibleLoginPage, token }) {
   useEffect(() => {
     attachObserver();
   }, [articles])
 
   const articlesToRender = articles.map((article, index) =>
     <div key={article.title} className="card" style={ article.imageUrl ? { backgroundImage: `url(${article.imageUrl})`}  : { backgroundColor: 'black' }}>
-      <SaveButton setIsVisibleLoginPage={setIsVisibleLoginPage} isLoggedIn={isLoggedIn} token={token} article={article} />
+      <SaveButton setIsVisibleLoginPage={setIsVisibleLoginPage} token={token} article={article} />
       <div className='card-text'>
         <h2 className="card-title">{article.title}</h2>
         <p className="card-description">{article.description}</p>
@@ -42,11 +42,11 @@ function AIbutton({ title }) {
   )
 }
 
-function SaveButton({ isLoggedIn, setIsVisibleLoginPage, token, article }) {
+function SaveButton({ token, setIsVisibleLoginPage, article }) {
   const [isSaved, setIsSaved] = useState(false)
 
   const handleSave = () => {
-    if (!isLoggedIn) {
+    if (!token) {
       setIsVisibleLoginPage(true)
     } else {
       if (!isSaved) {
@@ -57,6 +57,10 @@ function SaveButton({ isLoggedIn, setIsVisibleLoginPage, token, article }) {
           article.imageUrl,
           article.link
         )
+        .then((data) => {
+          console.log("Article saved:", data)
+        })
+        .catch((err) => console.error("Failed to save article:", err))
         setIsSaved(true)
       } else if (isSaved) {
         setIsSaved(false)

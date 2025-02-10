@@ -1,11 +1,12 @@
 import { useState } from "react"
 import api from "../api"
 
-function LoginPage({ setIsVisibleLoginPage, setIsLoggedIn }) {
+function LoginPage({ setIsVisibleLoginPage, setToken }) {
   const [isSignUp, setIsSignUp] = useState(true)
   const [userObject, setUserObject] = useState({
     username: '',
-    password: ''
+    password: '',
+    passwordConf: ''
   })
   const handleClose = () => {
     setIsVisibleLoginPage(false)
@@ -17,23 +18,25 @@ function LoginPage({ setIsVisibleLoginPage, setIsLoggedIn }) {
 
   const handleSignUp = (event) => {
     event.preventDefault();
-    api.registerUser(userObject.username, userObject.password)
-      .then((data) => {
-        console.log("User registered:", data);
-        toggleIsSignup()
-      })
-      .catch((err) => console.error("Registration failed:", err));
+    if (userObject.username && userObject.password && userObject.passwordConf && (userObject.password === userObject.passwordConf)) {
+      api.registerUser(userObject.username, userObject.password)
+        .then((data) => {
+          console.log("User registered:", data);
+          toggleIsSignup()
+        })
+        .catch((err) => console.error("Registration failed:", err));
+    }
   }
   
   const handleLogin = (event) => {
     event.preventDefault();
     api.loginUser(userObject.username, userObject.password)
-      .then((data) => {
-        console.log("User logged in:", data);
-        setIsVisibleLoginPage(false);
-        setIsLoggedIn(true);
-      })
-      .catch((err) => console.error("Login failed:", err));
+    .then((data) => {
+      console.log("User logged in:", data);
+      setIsVisibleLoginPage(false);
+      setToken(data.token);
+    })
+    .catch((err) => console.error("Login failed:", err));
   }
 
   return(
@@ -51,7 +54,6 @@ function LoginPage({ setIsVisibleLoginPage, setIsLoggedIn }) {
                 ...prev,
                 username: e.target.value
               }))
-              console.log(userObject)
             }} required id="username" type="text" placeholder="e.g. Jane_Smith2"/>
           </div>
           <div className='password input-container'>
@@ -61,12 +63,16 @@ function LoginPage({ setIsVisibleLoginPage, setIsLoggedIn }) {
                 ...prev,
                 password: e.target.value
               }))
-              console.log(userObject)
             }} required id="password" type="password" placeholder="e.g. Password_123" />
           </div>
           {isSignUp ? <div className='confirm-password input-container'>
             <label htmlFor="confirm-password">Confirm Password*</label>
-            <input required id="confirm-password" type="password" placeholder="e.g. Password_123"/>
+            <input onChange={(e) => {
+              setUserObject((prev) => ({
+                ...prev,
+                passwordConf: e.target.value
+              }))
+            }} required id="confirm-password" type="password" placeholder="e.g. Password_123"/>
           </div> : ''}
           <button type="submit">{isSignUp ? "Signup" : "Login"}</button>
           {isSignUp ? <p>Already have an account? <span onClick={toggleIsSignup} className="login-link">Login</span></p> : <p>Don't have an account? <span onClick={toggleIsSignup} className="login-link">Create an account</span></p>}

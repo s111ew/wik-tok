@@ -4,11 +4,12 @@ import LoadingPage from './components/LoadingPage'
 import Header from './components/Header'
 import Cards from './components/Cards'
 import LoginPage from './components/LoginPage'
+import axios from 'axios'
 
 function App() {
   const [articles, setArticles] = useState([]);
   const [hasLoaded, setHasLoaded] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState(null)
   const [page, setPage] = useState(1);
   const [isVisibleLoginPage, setIsVisibleLoginPage] = useState(false)
 
@@ -17,14 +18,9 @@ function App() {
   }, [page]);
 
   const fetchArticle = () => {
-    return fetch("https://en.wikipedia.org/api/rest_v1/page/random/summary")
-      .then((response) => {
-        if (response.status >= 400) {
-          throw new Error("server error");
-        }
-        return response.json();
-      })
-      .then((data) => {
+    return axios
+      .get("https://en.wikipedia.org/api/rest_v1/page/random/summary")
+      .then(({data}) => {
         return {
           imageUrl: data.originalimage?.source || "",
           title: data.title,
@@ -65,9 +61,9 @@ function App() {
 
   return (
     <>
-      {hasLoaded ? <Header setIsVisibleLoginPage={setIsVisibleLoginPage} isLoggedIn={isLoggedIn} /> : ''}
-      {hasLoaded && articles.length > 0 ? <Cards setIsVisibleLoginPage={setIsVisibleLoginPage} attachObserver={attachObserver} articles={articles} isLoggedIn={isLoggedIn}/> : <LoadingPage />}
-      {isVisibleLoginPage ? <LoginPage setIsLoggedIn={setIsLoggedIn} setIsVisibleLoginPage={setIsVisibleLoginPage} /> : ''}
+      {hasLoaded ? <Header setIsVisibleLoginPage={setIsVisibleLoginPage} token={token} /> : ''}
+      {hasLoaded && articles.length > 0 ? <Cards setIsVisibleLoginPage={setIsVisibleLoginPage} attachObserver={attachObserver} articles={articles} token={token}/> : <LoadingPage />}
+      {isVisibleLoginPage ? <LoginPage setToken={setToken} setIsVisibleLoginPage={setIsVisibleLoginPage} /> : ''}
     </>
   )
 }
